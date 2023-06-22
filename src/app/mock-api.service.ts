@@ -7,6 +7,7 @@ import {
   HttpResponse
 } from "@angular/common/http";
 import {Observable, of, throwError} from "rxjs";
+import {environment} from "../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +60,7 @@ export class MockApiService implements HttpInterceptor {
 
   // check if supplied token is valid
   private static isValidToken(token: string): boolean {
-    return token === '6e549c34cd4597298f8e0393c1c4a22c';
+    return token === environment.VALID_API_KEY;
   }
 }
 

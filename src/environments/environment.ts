@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  FIXER_API_KEY: '6e549c34cd4597298f8e0393c1c4a22c'
+  FIXER_API_KEY: 'FIXER_API_KEY',
+  VALID_API_KEY: 'VALID_API_KEY'
 };
 
 /*
