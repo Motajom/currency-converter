@@ -3,17 +3,28 @@ import { CurrencyConversionComponent } from './currency-conversion.component';
 import { Store, StoreModule } from '@ngrx/store';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { convertCurrency } from '../state/currency.actions';
+import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 
 describe('CurrencyConversionComponent', () => {
   let component: CurrencyConversionComponent;
   let fixture: ComponentFixture<CurrencyConversionComponent>;
   let store: MockStore<{ currency: { convertedAmount: number; error: string } }>;
 
+  const initialState = {
+    currency: {
+      sourceCurrency: '',
+      destinationCurrency: '',
+      amount: 0,
+      convertedAmount: 0,
+      error: null,
+    },
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CurrencyConversionComponent],
-      imports: [StoreModule.forRoot({})],
-      providers: [provideMockStore()],
+      imports: [StoreModule.forRoot({}), ReactiveFormsModule],
+      providers: [FormBuilder, provideMockStore({initialState})],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CurrencyConversionComponent);
@@ -21,24 +32,28 @@ describe('CurrencyConversionComponent', () => {
     store = TestBed.inject(Store) as MockStore<{ currency: { convertedAmount: number; error: string } }>;
   });
 
-  it('should dispatch convertCurrency action with correct parameters', () => {
-    const sourceCurrency = 'USD';
-    const amount = 10;
-    const destinationCurrency = 'EUR';
+  it('should initialize the form with default values', () => {
+    expect(component.currencyForm.get('sourceCurrency')?.value).toEqual('USD');
+    expect(component.currencyForm.get('amount')?.value).toEqual(0);
+    expect(component.currencyForm.get('destinationCurrency')?.value).toEqual('EUR');
+  });
 
+  it('should dispatch convertCurrency action with correct parameters', () => {
     const dispatchSpy = spyOn(store, 'dispatch');
 
-    component.sourceCurrency = sourceCurrency;
-    component.amount = amount;
-    component.destinationCurrency = destinationCurrency;
+    component.currencyForm.patchValue({
+      sourceCurrency: 'USD',
+      amount: 100,
+      destinationCurrency: 'EUR',
+    });
 
     component.convertCurrency();
 
     expect(dispatchSpy).toHaveBeenCalledWith(
       convertCurrency({
-        sourceCurrency,
-        amount,
-        destinationCurrency,
+        sourceCurrency: 'USD',
+        amount: 100,
+        destinationCurrency: 'EUR'
       })
     );
   });

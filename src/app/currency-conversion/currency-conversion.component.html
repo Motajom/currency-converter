@@ -1,33 +1,29 @@
-<div>
-  <h2>Currency Conversion</h2>
+<h2>Currency Converter</h2>
 
-  <label for="sourceCurrency">Source Currency:</label>
-  <select id="sourceCurrency" [(ngModel)]="sourceCurrency">
-    <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
-  </select>
-
-  <br>
-
-  <label for="amount">Amount:</label>
-  <input [(ngModel)]="amount" id="amount" type="number">
-
-  <br>
-
-  <label for="destinationCurrency">Destination Currency:</label>
-  <select id="destinationCurrency" [(ngModel)]="destinationCurrency">
-    <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
-  </select>
-
-  <br>
-
-  <button (click)="convertCurrency()">Convert</button>
-
-  <br>
-
-  <app-error *ngIf="errorMessage" [errorMessage]="errorMessage" id="error-message"></app-error>
-
-
-  <div *ngIf="convertedAmount">
-    Converted Amount: {{ convertedAmount }}
+<form [formGroup]="currencyForm" (ngSubmit)="convertCurrency()">
+  <div>
+    <label for="sourceCurrency">Source Currency:</label>
+    <select id="sourceCurrency" formControlName="sourceCurrency">
+      <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+    </select>
   </div>
+
+  <div>
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" formControlName="amount" required>
+  </div>
+
+  <div>
+    <label for="destinationCurrency">Destination Currency:</label>
+    <select id="destinationCurrency" formControlName="destinationCurrency">
+      <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+    </select>
+  </div>
+
+  <button type="submit">Convert</button>
+</form>
+
+<div *ngIf="convertedAmount !== null">
+  <h3>Converted Amount:</h3>
+  <p>{{ currencyForm.get('amount')?.value }} {{ currencyForm.get('sourceCurrency')?.value }} = {{ convertedAmount }} {{ currencyForm.get('destinationCurrency')?.value }}</p>
 </div>

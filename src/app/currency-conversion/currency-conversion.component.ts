@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Store} from "@ngrx/store";
 import { convertCurrency } from '../state/currency.actions';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 
 @Component({
@@ -11,21 +12,32 @@ import { convertCurrency } from '../state/currency.actions';
 export class CurrencyConversionComponent {
   // initialize variables
   errorMessage = '';
+  currencyForm: FormGroup;
   currencies = ['USD', 'EUR', 'GBP']; // sample currencies
   sourceCurrency: string = '';
   amount: number = 0;
   destinationCurrency: string = '';
   convertedAmount: null | number = null;
 
-  constructor(public store: Store<{ currency: { convertedAmount: number; error: string } }>) {}
+  constructor(private formBuilder: FormBuilder, public store: Store<{ currency: { convertedAmount: number; error: string } }>) {
+    this.currencyForm = this.formBuilder.group({
+      sourceCurrency: ['USD', Validators.required],
+      amount: [0, [Validators.required, Validators.min(0)]],
+      destinationCurrency: ['EUR', Validators.required]
+    });
+  }
+
+
 
   convertCurrency() {
     this.errorMessage = ''; // reset error message
-    this.store.dispatch( // dispatch store action
+    if (this.currencyForm.valid) {
+      const { sourceCurrency, destinationCurrency, amount } = this.currencyForm.value;
+      this.store.dispatch( // dispatch store action
       convertCurrency({
-        sourceCurrency: this.sourceCurrency,
-        amount: this.amount,
-        destinationCurrency: this.destinationCurrency,
+        sourceCurrency,
+        amount,
+        destinationCurrency
       })
     );
 
@@ -35,4 +47,4 @@ export class CurrencyConversionComponent {
       this.errorMessage = state.error;
     });
   }
-}
+}}

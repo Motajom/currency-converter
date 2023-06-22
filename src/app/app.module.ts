@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CurrencyConversionComponent } from './currency-conversion/currency-conversion.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {MockApiService} from "./mock-api.service";
 import {ErrorComponent} from "./error/error.component";
@@ -24,6 +24,7 @@ import {environment} from "../environments/environment.prod";
     imports: [
         BrowserModule,
         AppRoutingModule,
+      ReactiveFormsModule,
         FormsModule,
         HttpClientModule,
       StoreModule.forRoot({ currency: currencyReducer }),
